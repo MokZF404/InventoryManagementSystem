@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+<th:block th:fragment="head">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- JQuery -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
+	
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<!-- Google Fonts -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+	<!-- Material Design Bootstrap -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
+	<!-- Customised css -->
+	<link rel="stylesheet" th:href="@{/css/navbar-added.css}"></link>
+</th:block>
+
+</head>
+<body>
+	<div th:fragment="header" class = "sticky-top">
+		<!--Navbar -->
+		<nav class="mb-1 navbar navbar-expand-lg navbar-dark indigo sticky-top">
+			<a class="navbar-brand" th:href="@{/}">
+				<img width="165" th:src="@{/img/IMS_red.png}">
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent-333"
+				aria-controls="navbarSupportedContent-333" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent-333">
+				<ul sec:authorize="isAuthenticated()" class="navbar-nav mr-auto">
+					<li class="nav-item" th:classappend="${#request.requestURI == '/' ? 'active' : ''}">
+						<a class="nav-link" th:href="@{/}" th:text="#{navbar.home}">Home</a>
+					</li>
+					
+					<li sec:authorize="hasAuthority('ADMIN_CLERK')" class="nav-item" th:classappend="${#request.requestURI.startsWith('/list')  ? 'active' : ''}">
+						<a class="nav-link" th:href="@{/list/reorder}" th:text="#{navbar.reorders}">Reorders</a>
+					</li>
+								
+					<li class="nav-item dropdown" th:classappend="${(#request.requestURI.startsWith('/form')  || #request.requestURI.startsWith('/product/reorder')) ? 'active' : ''}">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" 
+							aria-haspopup="true" aria-expanded=false th:text="#{navbar.forms}">
+							Forms
+						</a>
+						<div class="dropdown-menu dropdown-default">
+							<a sec:authorize="hasAuthority('ADMIN_CLERK')" class="dropdown-item" th:href="@{/form/stockreorder}" th:text="#{navbar.stockreorder}"></a>
+							<a sec:authorize="hasAuthority('ADMIN_CLERK')" class="dropdown-item" th:href="@{/form/stockentry}" th:text="#{navbar.stockentry}"></a>
+							<a sec:authorize="hasAuthority('ADMIN_CLERK')" class="dropdown-item" th:href="@{/form/stockreturn}" th:text="#{navbar.stockreturn}"></a>
+							<a class="dropdown-item" th:href="@{/form/stockusage}" th:text="#{navbar.stockusage}"></a>
+						</div>
+					</li>
+					
+					<li sec:authorize="hasAuthority('ADMIN_CLERK')" class="nav-item dropdown" th:classappend="${#request.requestURI.startsWith('/report') ? 'active' : ''}">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" 
+							aria-haspopup="true" aria-expanded=false th:text="#{navbar.reports}">
+							Reports
+						</a>
+						<div class="dropdown-menu dropdown-default">
+							<a class="dropdown-item" th:href="@{/report/usage/query}" th:text="#{navbar.usagereport}"></a>
+							<a class="dropdown-item" th:href="@{/report/reorder/query}" th:text="#{navbar.reorderreport}"></a>
+						</div>
+					</li>					
+					
+					<li sec:authorize="hasAuthority('ADMIN_CLERK')" class="nav-item dropdown"
+					    th:classappend="${((#request.requestURI.startsWith('/product') && ! #request.requestURI.startsWith('/product/reorder')) || #request.requestURI.startsWith('/supplier') || #request.requestURI.startsWith('/brand') || #request.requestURI.startsWith('/category') || #request.requestURI.startsWith('/subcategory')) ? 'active' : ''}">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" 
+							aria-haspopup="true" aria-expanded=false th:text="#{navbar.manage}">
+							Manage
+						</a>
+						<ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+							<li class="dropdown-submenu">
+								<a class="dropdown-item arrow-r" th:text="#{navbar.products}">Products</a>
+									 <ul class="dropdown-menu">
+                    					<li class="dropdown-item"><a th:href="@{/product/add}" th:text="#{navbar.createproduct}"></a></li>
+                    					<li class="dropdown-item"><a th:href="@{/product/list}" th:text="#{navbar.edproduct}"></a></li>				
+									</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a class="dropdown-item" th:text="#{navbar.suppliers}">Suppliers</a>
+									 <ul class="dropdown-menu">
+                    					<li class="dropdown-item"><a th:href="@{/supplier/add}" th:text="#{navbar.createsupplier}"></a></li>
+                    					<li class="dropdown-item"><a th:href="@{/supplier/list}" th:text="#{navbar.edsupplier}"></a></li>				
+									</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a  class="dropdown-item" th:text="#{navbar.brands}">Brands</a>
+									 <ul class="dropdown-menu">
+                    					<li class="dropdown-item"><a th:href="@{/brand/add}" th:text="#{navbar.createbrand}"></a></li>
+                    					<li class="dropdown-item"><a th:href="@{/brand/list}" th:text="#{navbar.edbrand}"></a></li>				
+									</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a  class="dropdown-item" th:text="#{navbar.categories}">Categories</a>
+									 <ul class="dropdown-menu">
+                    					<li class="dropdown-item"><a th:href="@{/category/add}" th:text="#{navbar.createcategory}"></a></li>
+                    					<li class="dropdown-item"><a th:href="@{/category/list}" th:text="#{navbar.edcategory}"></a></li>				
+									</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a  class="dropdown-item" th:text="#{navbar.subcategories}">Subcategories</a>
+									 <ul class="dropdown-menu">
+                    					<li class="dropdown-item"><a th:href="@{/subcategory/add}" th:text="#{navbar.createsubcategory}"></a></li>
+                    					<li class="dropdown-item"><a th:href="@{/subcategory/list}" th:text="#{navbar.edsubcategory}"></a></li>				
+									</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a  class="dropdown-item" th:text="#{navbar.transactions}">Transactions</a>
+									 <ul class="dropdown-menu">                    					
+                    					<li class="dropdown-item"><a th:href="@{/transaction/list}" th:text="#{navbar.edtransaction}"></a></li>				
+									</ul>
+							</li>							
+						</ul>
+						
+					<li sec:authorize="hasAuthority('ADMIN_CLERK')" class="nav-item dropdown" th:classappend="${#request.requestURI.startsWith('/user') ? 'active' : ''}">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" 
+							aria-haspopup="true" aria-expanded=false th:text="#{navbar.manageusers}">
+							User Administration
+						</a>
+						<div class="dropdown-menu dropdown-default">
+							<a class="dropdown-item" th:href="@{/user/create}" th:text="#{navbar.createuser}"></a>
+							<a class="dropdown-item" th:href="@{/user/modify}" th:text="#{navbar.eduser}"></a>
+						</div>
+					</li>
+
+				</ul>
+				
+				<ul class="navbar-nav ml-auto nav-flex-icons">
+						<li th:if="${#request.remoteUser} != null" class="nav-item"><span th:text="'Welcome, ' + ${#request.remoteUser}" class="nav-link py-0 px-3 m-2 border-right"></span></li>						
+						<li th:if="${#request.remoteUser} == null" class="nav-item"><a th:href="@{/login}" th:text="#{navbar.login}" class="nav-link waves-effect waves-light">Login</a></li>
+						<li th:if="${#request.remoteUser} != null" class="nav-item"><a th:href="@{/logout}" th:text="#{navbar.logout}" class="nav-link waves-effect waves-light">Logout</a></li>
+				</ul>
+			</div>
+		</nav>
+		<!--/.Navbar -->
+		<div th:if="${alert} != null" th:class="'alert alert-' + ${alert.type} + ' alert-dismissible fade show'" role="alert" th:inline="text">
+		  [[${alert.message}]]
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+	</div>
+
+	<div class="bg-light text-center" th:fragment="footer">
+		<small class="align-items-center" th:text="'2020 Inventory Management System | Time: ' + ${#dates.format(#dates.createNow(), 'dd MMM yyyy HH:mm')}"></small>
+	</div>
+</body>
+</html>
